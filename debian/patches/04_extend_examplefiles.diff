@@ -1,0 +1,483 @@
+## 04_extend_examplefiles.diff by <danai@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## Improve some of the example files, and put extra comments if
+## extra packages need to be installed.
+
+---
+ examples/Big5.tex      |   24 +++++-
+ examples/CEF_test.tex  |    4 +
+ examples/CJKbabel.tex  |   11 ++
+ examples/CJKutf8.tex   |   35 +++++++--
+ examples/KS-hlatex.tex |  187 +++++++++++++++++++++++++++++++++++++++++++++++++
+ examples/rubytest.tex  |    7 -
+ examples/thai.tex      |   20 ++++-
+ 7 files changed, 269 insertions(+), 19 deletions(-)
+
+--- a/examples/Big5.tex
++++ b/examples/Big5.tex
+@@ -8,15 +8,33 @@
+ %
+ % process this file with bg5latex (or cjk-enc.el; see cjk-enc.txt)
+ 
+-\documentclass[12pt]{article} 
++\documentclass[12pt]{scrartcl}
++%\documentclass[12pt]{scrreprt}
++%\documentclass[12pt]{scrbook}
+ 
+ \usepackage{CJK}
+ 
+ 
+ \begin{document}
+ 
+-\begin{CJK*}{Bg5}{bsmi}
++\begin{CJK*}{Bg5}{bkai}
+ \CJKtilde
++% Traditional Chinese captions
++\CJKcaption{Bg5}
++
++\tableofcontents
++%\newpage
++\part{``Part'' in Chinese}
++
++%\chapter{blabla}
++
++\section{Some more commands}
++\today~is the date in Chinese.
++
++\subsection{¯SÀ°¡I}
++w00t!  A subsection title in Chinese!
++
++\section{¤¤¤å}
+ 
+ \noindent ¥»±`°İ°İµª¶°~(FAQ list)~¬O±q¤@¨Ç¸g±`³Q°İ¨ìªº°İÃD¤Î¨ä¾A·íªº¸Ñ
+ µª¤¤¡A¥H¤è«Kªº§Î¦¡ºK­n¦Ó¥Xªº¡C¸ò¤W¤@ª©¤£¦Pªº¬O¡A¨ä½s±Æµ²ºc¤w¹ı©³§ïÅÜ¡C
+@@ -31,5 +49,5 @@
+ %%% coding: big5
+ %%% mode: latex
+ %%% TeX-master: t
+-%%% TeX-command-default: "CJKLaTeX"
++%%% TeX-command-default: "LaTeX"
+ %%% End:
+--- a/examples/CEF_test.tex
++++ b/examples/CEF_test.tex
+@@ -7,6 +7,10 @@
+ 
+ % - requires fonts from the cns package
+ 
++% CEF doesn't work on Debian, because I haven't packaged the HBF
++% (bitmap fonts) yet.
++%   Danai SAE-HAN (éŸ“é”è€) <danai.sae-han@edpnet.be>
++
+ \documentclass[12pt]{article}
+ 
+ \usepackage[global]{CJK}
+--- a/examples/CJKbabel.tex
++++ b/examples/CJKbabel.tex
+@@ -15,6 +15,14 @@
+ % `cjk-write-file' will be available after loading cjk-enc.el into
+ % Emacs 20 with the commands load-file or load-library.
+ %
++% If you didn't touch the default Debian installation, then cjk-enc.el
++% should already be loaded by default.
++% German needs the "texlive-lang-german" Debian package.
++% Greek needs the "texlive-lang-greek" Debian package.
++% Korean needs the "hlatex-fonts-base" Debian package.
++% Russian needs the "texlive-lang-cyrillic" Debian package.
++% Vietnamese and Thai need the "texlive-lang-other" Debian package.
++%
+ % Vietnamese support comes with the VnTeX package.
+ % - T2A encoding for Computer Modern Cyrillic requires LH fonts
+ % - uses CB Greek fonts and CM-Super fonts
+@@ -36,6 +44,11 @@
+             greek,                  % LGR font encoding
+             vietnamese,             % T5 font encoding
+             USenglish]{babel}
++% You need texlive-lang-cyrillic for "russian",
++% texlive-lang-vietnamese for "vietnam", and texlive-lang-german for
++% "german".   If you don't have these packages, then adjust the above
++% line accordingly, and comment out the corresponding language block
++% beneath.
+ 
+ \usepackage[overlap, CJK]{ruby}
+ \usepackage{CJKulem}
+@@ -77,10 +90,10 @@
+ \textbf{‘ÓĞ‘¹Ø‘ĞÂ‘½á‘¹¹‘µÄ‘Ï¸‘½Ú‘£¬‘¿É‘²Î‘¿¼‘¡¸‘Èç‘ºÎ‘ÔÄ‘¶Á‘±¾‘ÎÊ‘´ğ‘¼¯‘¼°‘ÁË‘½â‘Æä‘±à‘ÅÅ‘½á‘¹¹‘¡¹‘¸Ã
+   ‘Ïî‘ÖĞ‘µÄ‘Ëµ‘Ã÷‘¡£}
+ 
+-˜¨Ü˜¼§˜»Ã˜»Ã˜Ã±˜Äö~(FAQ list)~˜³Ó˜¼¸˜¦¢˜­é˜Çï˜¼§˜¿¸˜»Ã˜®°˜°ü˜»Ã˜Ùï˜§°˜®¨˜ÑË˜Ç¶˜°ü˜ÈÙ˜Ã±˜¦ä˜¡¢˜§é˜§Ê
+-˜±î˜°ü˜¬±˜ª£˜Êó˜µÓ˜ªÕ˜§ù˜°ü˜¡¤\uline{˜Èú˜¦¹˜¦¢˜°ë˜¦ã˜©Ò˜°ü˜³Ó˜¡¢˜®¨˜Ğ¾˜¼ë˜Ã¹˜Ë­˜¦Ù˜Êæ˜¯¶˜¬Ò˜ŞÉ˜¡¤}
+-\textbf{˜ªµ˜ÛÃ˜Æ¼˜Ã¹˜Ë­˜°ü˜¾Ù˜Çè˜¡¢˜¨¬˜»·˜ªÔ˜¡Ö˜©ò˜ªõ˜Ñæ˜İõ˜¨Ü˜»Ã˜Ã±˜Äö˜§°˜¦¨˜ÈÙ˜®¨˜Ğ¾˜¼ë˜Ã¹˜Ë­˜¡×˜ÈÛ
+-  ˜Äû˜¦ä˜°ü˜Íª˜¯ı˜¡¤}
++‘±¾‘³£•ÙÂ•ÙÂ‘´ğ‘¼¯~(FAQ list)~‘ÊÇ•Ú·‘Ò»‘Ğ©•åî‘³£‘±»•ÙÂ‘µ½‘µÄ•ÙÂ•÷î‘¼°‘Æä•ïË•åµ‘µÄ‘½â‘´ğ‘ÖĞ‘£¬‘ÒÔ‘·½
++‘±ã‘µÄ‘ĞÎ‘Ê½‘Õª‘Òª‘¶ø‘³ö‘µÄ‘¡£\uline{‘¸ú‘ÉÏ‘Ò»‘°æ‘²»‘Í¬‘µÄ‘ÊÇ‘£¬‘Æä•î¾‘ÅÅ•á¸•é¬‘ÒÑ•èå‘µ×‘¸Ä•üÈ‘¡£}
++\textbf{‘ÓĞ•ùÃ‘ĞÂ•á¸•é¬‘µÄ•ÜØ•åç‘£¬‘¿É•Ù¶‘¿¼‘¡¸‘Èç‘ºÎ•ïå•ûô‘±¾•ÙÂ‘´ğ‘¼¯‘¼°‘ÁË‘½â‘Æä•î¾‘ÅÅ•á¸•é¬‘¡¹•æÚ
++  •âú‘ÖĞ‘µÄ•ë©‘Ã÷‘¡£}
+ 
+ This FAQ list was made to summarize some frequently asked questions
+ and their answers in a convenient form.  \uline{The structure of this
+@@ -88,19 +101,19 @@ and their answers in a convenient form.
+ \textbf{For details of the new structure, see the entry of `How to
+   read this FAQ and its structure'.}
+ 
+-’¤³’¤Î~FAQ~’¥ê’¥¹’¥È’¤Ï’¡¢’¤è’¤¯’¤¢’¤ë’¼Á’Ìä’¤È’¤½’¤Î’Åú’¤ò’½¸’¤á’¡¢’Ìò’¤Ë’Î©’¤Ä’¤è’¤¦’¤Ë’¤·’¤¿’¤â’¤Î
+-’¤Ç’¤¹’¡£\uline{’¤³’¤Î~FAQ~’¥ê’¥¹’¥È’¤Î’¹½’Â¤’¤Ï’¡¢’°Ê’Á°’¤Î’¤â’¤Î’¤È’Èæ’¤Ù’¤Æ’Âç’Éı’¤Ë’ÊÑ’¹¹’¤µ’¤ì
+-  ’¤Æ’¤¤’¤Ş’¤¹’¡£}\textbf{\ruby{’¿·}{’¤¢’¤¿’¤é}’¤·’¤¤’¹½’Â¤’¤Ë’´Ø’¤·’¤Æ’¤Ï’¡¢’¡Ö’¤³’¤Î~FAQ~
+-  ’¤Î’ÆÉ’¤ß’Êı’¤È’¤½’¤Î’¹½’Â¤’¡×’¤Î’¹à’ÌÜ’¤ò\ruby{’»²}{’¤µ’¤ó}\ruby{’¾È}{’¤·’¤ç’¤¦}’¤·’¤Æ’²¼’¤µ
+-  ’¤¤’¡£}
++‘¤³‘¤Î~FAQ~‘¥ê‘¥¹‘¥È‘¤Ï‘¡¢‘¤è‘¤¯‘¤¢‘¤ë•ï³•ÙÂ‘¤È‘¤½‘¤Î‘´ğ‘¤ò‘¼¯‘¤á‘¡¢‘ÒÛ‘¤Ë‘Á¢‘¤Ä‘¤è‘¤¦‘¤Ë‘¤·‘¤¿‘¤â‘¤Î
++‘¤Ç‘¤¹‘¡£\uline{‘¤³‘¤Î~FAQ~‘¥ê‘¥¹‘¥È‘¤Î•é¬‘Ôì‘¤Ï‘¡¢‘ÒÔ‘Ç°‘¤Î‘¤â‘¤Î‘¤È‘±È‘¤Ù‘¤Æ‘´ó‘·ù‘¤Ëö«ù‘¸ü‘¤µ‘¤ì
++  ‘¤Æ‘¤¤‘¤Ş‘¤¹‘¡£}\textbf{\ruby{‘ĞÂ}{‘¤¢‘¤¿‘¤é}‘¤·‘¤¤•é¬‘Ôì‘¤ËöÊ½‘¤·‘¤Æ‘¤Ï‘¡¢‘¡¸‘¤³‘¤Î~FAQ~
++  ‘¤Î’ÆÉ‘¤ß‘·½‘¤È‘¤½‘¤Î•é¬‘Ôì‘¡¹‘¤Î•âú‘Ä¿‘¤ò\ruby{‘²Î}{‘¤µ‘¤ó}\ruby{‘ÕÕ}{‘¤·‘¤ç‘¤¦}‘¤·‘¤Æ‘ÏÂ‘¤µ
++  ‘¤¤‘¡£}
+ 
+ \begin{otherlanguage}{vietnamese}
+-Phš¢¥n ``Nhš¢æng cš¢âu hš¢öi vš¢à giš¢äi š¢ğš¢áp thš¢ßš¢¶ng gš¢£p'' (viš¢ªt tš¢¡t tš¢× tiš¢ªng Anh
+-lš¢à FAQ) š¢ğš¢ßš¢şc nš¢êu ra š¢· š¢ğš¢ây nhš¢¢m mš¢øc š¢ğš¢ích thu thš¢§p nhš¢æng cš¢âu hš¢öi thš¢ßš¢¶ng
+-gš¢£p trong thš¢ñc tš¢ª vš¢à nhš¢æng lš¢¶i giš¢äi š¢ğš¢áp thš¢ích hš¢şp nhš¢¤t cš¢üa nš¢ó.
+-\uline{Tš¢× lš¢¥n š¢¤n bš¢än cuš¢¯i cš¢ùng š¢ğš¢ªn nay, š¢ğš¢ã cš¢ó nhš¢æng sš¢ñ thay š¢ğš¢±i khš¢á
+-  lš¢¾n trong cš¢¤u trš¢úc cš¢üa FAQ.}  \textbf{š£ğš¢¬ hiš¢¬u rš¢õ hš¢½n bš¢Õn nš¢ên xem lš¢Õi
+-  chš¢ßš¢½ng ``Lš¢àm sao tš¢ôi cš¢ó thš¢¬ š¢ğš¢÷c š¢ğuš¢şc FAQ''.}
++Phš¢¥n ``Nhš¢æng câu hš¢öi và giš¢äi ‚ğáp thš¢ßš¢¶ng gš¢£p'' (viš¢ªt tš¢¡t tš¢× tiš¢ªng Anh
++là FAQ) ‚ğš¢ßš¢şc nêu ra š¢· ‚ğây nhš¢¢m mš¢øc ‚ğích thu thš¢§p nhš¢æng câu hš¢öi thš¢ßš¢¶ng
++gš¢£p trong thš¢ñc tš¢ª và nhš¢æng lš¢¶i giš¢äi ‚ğáp thích hš¢şp nhš¢¤t cš¢üa nó.
++\uline{Tš¢× lš¢¥n š¢¤n bš¢än cuš¢¯i cùng ‚ğš¢ªn nay, ‚ğã có nhš¢æng sš¢ñ thay ‚ğš¢±i khá
++  lš¢¾n trong cš¢¤u trúc cš¢üa FAQ.}  \textbf{‚Ğš¢¬ hiš¢¬u rõ hš¢½n bš¢Õn nên xem lš¢Õi
++  chš¢ßš¢½ng ``Làm sao tôi có thš¢¬ ‚ğš¢÷c ‚ğuš¢şc FAQ''.}
+ \end{otherlanguage}
+ 
+ \begin{otherlanguage}{russian}
+@@ -112,9 +125,9 @@ gš¢£p trong thš¢ñc tš¢ª vš¢à nhš¢æng lš¢
+ \end{otherlanguage}
+ 
+ \begin{otherlanguage}{thaicjk}
+-  …Ã…Ò…Â…¡…Ò…Ã FAQ €¥¹¥Õ¥é…Ê€¥Ã¥é…Ò…§€¥¢¥Ö¥é…¹…à€¥¾¥×¥è…Í…Ê€¥Ã¥Ø…»…¤…Ó…¶…Ò…Á€¥·¥Õ¥è…¶…Ò…Á€¥¡¥Ñ…¹€¥º¥è…Í…Â…¤€¥Ã¥Ñ¥é…§…á…Å…Ğ…¤…Ó…µ…Í…º…¤…Ó…¶…Ò…Á…ã…¹€¥Ã¥Ù…»…á…º…º€¥·¥Õ…Ê…Ğ…´…Ç…¡.
+-  \uline{…â…¤…Ã…§…Ê€¥Ã¥é…Ò…§…¢…Í…§…Ã…Ò…Â…¡…Ò…Ã FAQ €¥¹¥Õ¥é…à…»€¥Å¥Õ¥è…Â…¹…ä…»…Á…Ò…¡€¥µ¥Ñ¥é…§…á€¥µ¥è€¥Ã¥Ø¥è…¹€¥·¥Õ¥è…á€¥Å¥é…Ç.}
+-  \textbf{€¥´¥Ù…Ã…Ò…Â…Å…Ğ…à€¥Í¥Õ…Â…´…Ê…Ó…Ë€¥Ã¥Ñ…º…â…¤…Ã…§…Ê€¥Ã¥é…Ò…§…ã…Ë€¥Á¥è…ä€¥´¥é…¨…Ò…¡€¥ª¥è…Ç…§ ``…â…¤…Ã…§…Ê€¥Ã¥é…Ò…§…á…Å…Ğ€¥Ç¥Ô€¥¸¥Õ…¡…Ò…Ã€¥Í¥è…Ò…¹
++  …Ã…Ò…Â…¡…Ò…Ã FAQ …¹…Õ…é…Ê…Ã…é…Ò…§…¢…Ö…é…¹…à…¾…×…è…Í…Ê…Ã…Ø…»…¤…Ó…¶…Ò…Á…·…Õ…è…¶…Ò…Á…¡…Ñ…¹…º…è…Í…Â…¤…Ã…Ñ…é…§…á…Å…Ğ…¤…Ó…µ…Í…º…¤…Ó…¶…Ò…Á…ã…¹…Ã…Ù…»…á…º…º…·…Õ…Ê…Ğ…´…Ç…¡.
++  \uline{…â…¤…Ã…§…Ê…Ã…é…Ò…§…¢…Í…§…Ã…Ò…Â…¡…Ò…Ã FAQ …¹…Õ…é…à…»…Å…Õ…è…Â…¹…ä…»…Á…Ò…¡…µ…Ñ…é…§…á…µ…è…Ã…Ø…è…¹…·…Õ…è…á…Å…é…Ç.}
++  \textbf{…´…Ù…Ã…Ò…Â…Å…Ğ…à…Í…Õ…Â…´…Ê…Ó…Ë…Ã…Ñ…º…â…¤…Ã…§…Ê…Ã…é…Ò…§…ã…Ë…Á…è…ä…´…é…¨…Ò…¡…ª…è…Ç…§ ``…â…¤…Ã…§…Ê…Ã…é…Ò…§…á…Å…Ğ…Ç…Ô…¸…Õ…¡…Ò…Ã…Í…è…Ò…¹
+     FAQ.''}
+ \end{otherlanguage}
+ 
+--- a/examples/CJKutf8.tex
++++ b/examples/CJKutf8.tex
+@@ -14,11 +14,19 @@
+ %
+ % Read CJKutf8.txt for more details.
+ 
++% To get all the languages working on Debian, make sure you read the
++% comments a few lines below.
++%
++% Also install the "cm-super" package if you want LaTeX fonts to be
++% scaled to any size you want.  Uncomment the "type1ec" line below.
++%
++%   Danai SAE-HAN (éŸ“é”è€) <danai.sae-han@edpnet.be>
++
+ \documentclass[12pt]{article}
+ 
+ \usepackage{cmap}
+ 
+-\usepackage[10pt]{type1ec}          % use only 10pt fonts
++#\usepackage[10pt]{type1ec}          % use only 10pt fonts
+ \usepackage[T1]{fontenc}
+ 
+ \usepackage{CJKutf8}                % CJK wrapper of [utf8]{inputenc}
+@@ -28,6 +36,19 @@
+             greek,                  % LGR font encoding
+             USenglish]{babel}
+ 
++% You need texlive-lang-cyrillic for "russian",
++% texlive-lang-vietnamese for "vietnam", and texlive-lang-german for
++% "german".   If you don't have these packages, then adjust the above
++% line accordingly, and comment out the corresponding language block
++% beneath.
++%
++% With regard to Korean, I have yet to package the Unicode fonts for
++% Debian.  Don't hold your breath though.  If you want an easy
++% Makefile that creates and installs everything automatically, don't
++% hesitate and e-mail to <danai.sae-han@edpnet.be>.
++% If you don't mind not using UTF-8, then check out CJKbabel.tex to
++% get Korean text in harmony with other scripts.
++
+ \usepackage{textalpha}              % improved LGR support
+ 
+ \usepackage[overlap, CJK]{ruby}
+@@ -58,12 +79,12 @@
+ 
+ \begin{CJK}{UTF8}{}
+ 
+-\begin{Korean}
+-  ì´ FAQ ì€ ìì£¼ ë°˜ë³µë˜ëŠ” ì§ˆë¬¸ê³¼ ê·¸ì— ëŒ€í•œ ëŒ€ë‹µì„ ê°„ë‹¨ëª…ë£Œí•œ ì–‘ì‹ìœ¼ë¡œ
+-  ëª¨ì•„ ì—®ì–´ì¡ŒìŠµë‹ˆë‹¤. \uline{ì´ FAQ ì˜ êµ¬ì¡°ëŠ” ì§€ë‚œ íŒì— ë¹„í•˜ì—¬
+-    íšê¸°ì ìœ¼ë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.}  \textbf{ìƒì„¸í•œ ê²ƒì€ ``ì´ FAQ ì„ ì–´ë–»ê²Œ
+-    ì½ì„ ê²ƒì¸ê°€'' ë¼ëŠ” ëŒ€ëª©ì„ ì°¸ì¡°í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.}
+-\end{Korean}
++%\begin{Korean}
++%  ì´ FAQ ì€ ìì£¼ ë°˜ë³µë˜ëŠ” ì§ˆë¬¸ê³¼ ê·¸ì— ëŒ€í•œ ëŒ€ë‹µì„ ê°„ë‹¨ëª…ë£Œí•œ ì–‘ì‹ìœ¼ë¡œ
++%  ëª¨ì•„ ì—®ì–´ì¡ŒìŠµë‹ˆë‹¤. \uline{ì´ FAQ ì˜ êµ¬ì¡°ëŠ” ì§€ë‚œ íŒì— ë¹„í•˜ì—¬
++%    íšê¸°ì ìœ¼ë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.}  \textbf{ìƒì„¸í•œ ê²ƒì€ ``ì´ FAQ ì„ ì–´ë–»ê²Œ
++%    ì½ì„ ê²ƒì¸ê°€'' ë¼ëŠ” ëŒ€ëª©ì„ ì°¸ì¡°í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.}
++%\end{Korean}
+ 
+ \begin{otherlanguage}{german}
+   Dieses FAQ wurde erstellt, um hÃ¤ufig gestellte Fragen und ihre
+--- /dev/null
++++ b/examples/KS-hlatex.tex
+@@ -0,0 +1,187 @@
++% This is a testfile of the CJK Debian package to test Korean.
++% Please install hlatex-fonts-base (perhaps -extra as well).
++%
++% written by Danai SAE-HAN (éŸ“é”è€) <danai.sae-han@edpnet.be>
++%
++% Version 4.8.3 (07-May-2012)
++
++\documentclass[12pt]{article}
++
++\usepackage{CJK}
++\usepackage{pshan}
++
++
++\begin{document}
++
++\begin{CJK}[HL]{KS}{}
++
++\newcommand{\testpar}{\noindent ÀÌ FAQ Àº ÀÚÁÖ ¹İº¹µÇ´Â Áú¹®°ú ±×¿¡
++  ´ëÇÑ ´ë´äÀ» °£´Ü¸í·áÇÑ¾ç½ÄÀ¸·Î ¸ğ¾Æ ¿«¾îÁ³½À´Ï´Ù. ÀÌ FAQ ÀÇ ±¸Á¶´Â
++  Áö³­ ÆÇ¿¡ ºñÇÏ¿©È¹±âÀûÀ¸·Î º¯°æµÇ¾ú½À´Ï´Ù.  \textbf{»ó¼¼ÇÑ °ÍÀº ``ÀÌ
++    FAQ À» ¾î¶»°ÔÀĞÀ» °ÍÀÎ°¡'' ¶ó´Â ´ë¸ñÀ» ÂüÁ¶ÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.}}
++
++\section{Myoungjo (default)}
++%\CJKfamily{}
++\mj
++\rm
++\testpar
++
++\sl
++\testpar
++
++
++\section{Bom}
++%\CJKfamily{}
++\bm
++\rm
++\testpar
++
++\sl
++\testpar
++
++
++\section{Dinaru}
++%\CJKfamily{}
++\dn
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Graphic}
++%\CJKfamily{}
++\gr
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Gothic}
++%\CJKfamily{}
++\gt
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Jamo Gothic}
++%\CJKfamily{}
++\jgt
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Jamo Myoungjo}
++%\CJKfamily{}
++\jmj
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Jamo Novel}
++%\CJKfamily{}
++\jnv
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Jamo Sora}
++%\CJKfamily{}
++\jsr
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Pilgi}
++%\CJKfamily{}
++\pg
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Pilgia}
++%\CJKfamily{}
++\pga
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Pen Heulim}
++%\CJKfamily{}
++\ph
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Pen}
++%\CJKfamily{}
++\pn
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Shinmun Myoungjo}
++%\CJKfamily{}
++\sh
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Typewriter (Taza)}
++%\CJKfamily{}
++\tz
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Vada}
++%\CJKfamily{}
++\vd
++\rm
++\testpar
++
++\sl
++\testpar
++
++\section{Yetgul}
++%\CJKfamily{}
++\yt
++\rm
++\testpar
++
++\sl
++\testpar
++
++
++\end{CJK}
++
++\end{document}
++
++%%% Local Variables:
++%%% coding: euc-korea
++%%% mode: latex
++%%% TeX-master: t
++%%% End:
+--- a/examples/rubytest.tex
++++ b/examples/rubytest.tex
+@@ -5,16 +5,15 @@
+ %
+ % Version 4.8.4 (18-Apr-2015)
+ 
+-% You need Emacs 20 (or Mule 2.3) to process this file!
+-
+ % You should load this file into Mule with `*internal*' encoding scheme
+ % (C-u C-x C-f) and call `cjk-write-file' (M-x cjk-write-file).
++% `cjk-write-file' has a shortcut: C-c SPC C-x.
+ % Then run LaTeX on the created file `rubytest.cjk'.
+ %
+-% Under Emacs 20 type `C-x C-f rubytest.tex' to load this file.
+-%
+ % `cjk-write-file' will be available after loading cjk-enc.el into Mule
+ % (Emacs 20) with the commands load-file or load-library.
++% If you didn't touch the default Debian installation, then this is
++% already taken care of.
+ 
+ \documentclass[12pt]{article}
+ 
+--- a/examples/thai.tex
++++ b/examples/thai.tex
+@@ -11,7 +11,8 @@
+ %   . font switching between Thai and non-Thai
+ %   . intercharacter glue
+ %
+-% Please read cjk-enc.txt for usage instructions.
++% Please read cjk-enc.txt for usage instructions, or have a look at
++% muletest.tex or CJKbabel.tex instead.
+ %
+ % To process without cjk-enc.el, comment out the line containing
+ % `\extrasthaicjk'.  Note, however, that you get overlong lines, and you
+@@ -20,18 +21,33 @@
+ 
+ \documentclass[12pt]{article}
+ 
+-\usepackage[thaicjk]{babel}
++\usepackage[USenglish,thaicjk]{babel} % Last entry is the default.
+ 
+ % \addto\extrasthaicjk{\fontencoding{C90}\selectfont}
+ 
+ 
+ \begin{document}
+ 
++%Currently using:
++%\font\thai = ftnr8z
++
++\section{Norasi}
++
++ÃÒÂ¡ÒÃ FAQ ¹ÕéÊÃéÒ§¢Öé¹à¾×èÍÊÃØ»¤Ó¶ÒÁ·Õè¶ÒÁ¡Ñ¹ºèÍÂ¤ÃÑé§áÅĞ¤ÓµÍº¤Ó¶ÒÁã¹ÃÙ»áºº·ÕÊĞ´Ç¡.
++â¤Ã§ÊÃéÒ§¢Í§ÃÒÂ¡ÒÃ FAQ ¹Õéà»ÅÕèÂ¹ä»ÁÒ¡µÑé§áµèÃØè¹·ÕèáÅéÇ.
++\textbf{´ÙÃÒÂÅĞàÍÕÂ´ÊÓËÃÑºâ¤Ã§ÊÃéÒ§ãËÁèä´é¨Ò¡ªèÇ§ ``â¤Ã§ÊÃéÒ§áÅĞÇÔ¸Õ¡ÒÃÍèÒ¹
++  FAQ.''}
++
++
++\section{Garuda}
++\tt
++
+ ÃÒÂ¡ÒÃ FAQ ¹ÕéÊÃéÒ§¢Öé¹à¾×èÍÊÃØ»¤Ó¶ÒÁ·Õè¶ÒÁ¡Ñ¹ºèÍÂ¤ÃÑé§áÅĞ¤ÓµÍº¤Ó¶ÒÁã¹ÃÙ»áºº·ÕÊĞ´Ç¡.
+ â¤Ã§ÊÃéÒ§¢Í§ÃÒÂ¡ÒÃ FAQ ¹Õéà»ÅÕèÂ¹ä»ÁÒ¡µÑé§áµèÃØè¹·ÕèáÅéÇ.
+ \textbf{´ÙÃÒÂÅĞàÍÕÂ´ÊÓËÃÑºâ¤Ã§ÊÃéÒ§ãËÁèä´é¨Ò¡ªèÇ§ ``â¤Ã§ÊÃéÒ§áÅĞÇÔ¸Õ¡ÒÃÍèÒ¹
+   FAQ.''}
+ 
++
+ \end{document}
+ 
+ 

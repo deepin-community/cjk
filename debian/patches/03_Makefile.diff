@@ -1,0 +1,66 @@
+## 03_Makefile.diff by <danai@debian.org>
+##
+## Modify the upstream Makefile so it builds on Debian.
+
+---
+ Makefile |   49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+--- cjk-4.8.4+git20150701.orig/Makefile
++++ cjk-4.8.4+git20150701/Makefile
+@@ -33,6 +33,55 @@
+ # o The TeXLive version of some font definition files are used (in the
+ #   `texlive' subdirectory).
+ 
++
++###
++# Makefile for CJK LaTeX (Debian package)
++# written by Anthony Fok <foka@debian.org>
++# Complaints should be sent to Danai SAE-HAN (韓達耐) <danai.sae-han@edpnet.be>
++
++CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)
++LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)
++TEXMF = $(prefix)/share/texmf
++
++cjkutils = utils/Bg5conv/bg5conv \
++       utils/extconv/extconv \
++       utils/SJISconv/sjisconv \
++       utils/CEFconv/cefconv \
++       utils/CEFconv/cef5conv \
++       utils/CEFconv/cefsconv
++
++# allutils = $(cjkutils) utils/thaiconv/thaiconv utils/hbf2gf/hbf2gf
++allutils = $(cjkutils) utils/hbf2gf/hbf2gf
++
++all: $(allutils)
++
++.PHONY: all install clean distclean
++
++# we need /usr/lib for libkpathsea compilation
++utils/hbf2gf/hbf2gf:
++	( cd utils/hbf2gf; \
++         CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure --prefix=/usr \
++               --with-kpathsea-lib=/usr/lib \
++               --with-kpathsea-include=/usr/include \
++               --mandir='$${prefix}/share/man' && \
++	$(MAKE) )
++
++install: all
++	install -d $(prefix)/bin $(TEXMF)/hbf2gf
++
++	cp -a $(cjkutils) $(prefix)/bin
++	install -m 0755 utils/*conv/*latex $(prefix)/bin
++
++	$(MAKE) -C utils/hbf2gf install
++	cp -a utils/hbf2gf/cfg/* $(TEXMF)/hbf2gf
++
++clean:
++	rm -f $(allutils)
++	if [[ -e utils/hbf2gf/Makefile ]]; then $(MAKE) -C utils/hbf2gf distclean; fi
++
++distclean: clean
++###
++
+ version=4.8.4
+ 
+ distdir=cjk-$(version)
